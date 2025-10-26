@@ -1,8 +1,9 @@
 """
-Figure 8: Rope Requirements Across Moai Transport Scenarios
+Figure 8: Tensile Strength Scaling and Required Rope Diameters for Moai Transport
 
-This script generates a multi-axis bar chart comparing rope diameter requirements,
-moai mass, and workforce requirements across different moai categories.
+This script generates a two-panel figure showing:
+- Left: Breaking load vs rope diameter
+- Right: Required rope diameter vs moai mass
 """
 
 import matplotlib.pyplot as plt
@@ -18,131 +19,115 @@ plt.rcParams['ytick.labelsize'] = 9
 plt.rcParams['legend.fontsize'] = 9
 plt.rcParams['figure.dpi'] = 600
 
-# Create figure
-fig, ax1 = plt.subplots(figsize=(10, 8))
+# Create figure with two subplots
+fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(12, 5))
 
 # ============================================================================
-# Data for Different Moai Categories
+# LEFT PANEL: Breaking Load vs Diameter
 # ============================================================================
 
-categories = ['Quarry\n(incomplete)', 'Road\n(abandoned)', 
-              'Platform\n(transported)', 'Paro\n(transported)']
+# Parameters
+diameters = np.linspace(5, 60, 100)  # mm
+tensile_strength = 916  # MPa for T. cordifolia
+efficiency = 0.75  # rope construction efficiency (70-80%)
 
-# Typical values for each category
-typical_mass = [15, 12, 14, 86]  # tons
+# Calculate cross-sectional area
+area = np.pi * (diameters/2)**2  # mm^2
 
-# Calculate rope diameter consistently with other figures
-# Using: working_load = mass * 1.0 kN/ton, SF=10, 916 MPa, 75% efficiency
-tensile_strength = 916  # MPa
-efficiency = 0.75
+# Calculate breaking load
+# Breaking Load (N) = Tensile Strength (MPa) × Area (mm²) × Efficiency
+breaking_load = tensile_strength * area * efficiency / 1000  # Convert to kN
+
+# Plot main curve
+ax_left.plot(diameters, breaking_load, 'b-', linewidth=2, 
+             label='T. cordifolia (916 MPa)')
+ax_left.fill_between(diameters, 0, breaking_load, alpha=0.2, color='blue')
+
+# Add reference lines for moai requirements
+ax_left.axhline(y=4, color='green', linestyle='--', linewidth=1.5, 
+                label='4 ton moai requirement (~4 kN)')
+ax_left.axhline(y=80, color='orange', linestyle='--', linewidth=1.5, 
+                label='80 ton moai requirement (~80 kN)')
+
+# Add safety factor line
+safety_factor_8 = breaking_load / 8
+ax_left.plot(diameters, safety_factor_8, 'r--', linewidth=1, alpha=0.5, 
+             label='Breaking load / 8 (safety margin)')
+
+# Mark specific points
+diameter_10mm = 10
+idx_10 = np.argmin(np.abs(diameters - diameter_10mm))
+ax_left.plot(diameter_10mm, breaking_load[idx_10], 'ro', markersize=8)
+ax_left.text(diameter_10mm, breaking_load[idx_10] + 20, '10 mm\n32 kN', 
+             ha='center', fontsize=8)
+
+diameter_45mm = 45
+idx_45 = np.argmin(np.abs(diameters - diameter_45mm))
+ax_left.plot(diameter_45mm, breaking_load[idx_45], 'ro', markersize=8)
+ax_left.text(diameter_45mm, breaking_load[idx_45] + 40, '45 mm\n1093 kN',
+             ha='center', fontsize=8)
+
+# Labels and formatting
+ax_left.set_xlabel('Rope Diameter (mm)')
+ax_left.set_ylabel('Breaking Load (kN)')
+ax_left.set_title('Rope Breaking Load vs Diameter\n(Triumfetta cordifolia, 75% efficiency)')
+ax_left.grid(True, alpha=0.3)
+ax_left.legend(loc='upper left', fontsize=8)
+ax_left.set_xlim(5, 60)
+ax_left.set_ylim(0, 1200)
+
+# ============================================================================
+# RIGHT PANEL: Required Rope Diameter vs Moai Mass
+# ============================================================================
+
+# Moai masses to analyze
+moai_masses = np.array([4, 10, 20, 40, 60, 80, 86])  # tons
+
+# Assume working load = 1 kN per ton (simplified estimate)
+force_per_rope = moai_masses * 1000  # N
+
+# Safety factor
 safety_factor = 10
-rope_diameter_required = []
-for mass in typical_mass:
-    working_load = mass * 1.0  # kN
-    required_breaking_load = working_load * safety_factor
-    diameter = 2 * np.sqrt(required_breaking_load * 1000 / (tensile_strength * efficiency * np.pi))
-    rope_diameter_required.append(diameter)
 
-people_required = [10, 8, 10, 60]  # estimated people per rope team
+# Required breaking load
+required_breaking_load = force_per_rope * safety_factor / 1000  # kN
 
-x = np.arange(len(categories))
-width = 0.25
+# Calculate required diameter from breaking load
+# Rearranging: Breaking Load = Tensile Strength × π × (d/2)² × Efficiency
+# d = 2 × sqrt(Breaking Load / (Tensile Strength × π × Efficiency))
+required_diameter = 2 * np.sqrt(required_breaking_load * 1000 / 
+                                (tensile_strength * efficiency * np.pi))
 
-# ============================================================================
-# Create Three Y-Axes
-# ============================================================================
+# Plot required diameter vs mass
+ax_right.plot(moai_masses, required_diameter, 'b-o', linewidth=2, markersize=6)
 
-# Second y-axis (mass)
-ax2 = ax1.twinx()
+# Add handling limit lines
+ax_right.axhline(y=50, color='r', linestyle='--', linewidth=2, 
+                 label='Practical handling limit (~50 mm)')
+ax_right.fill_between(moai_masses, 50, 70, alpha=0.2, color='red', 
+                       label='Difficult to handle')
 
-# Third y-axis (people) - offset to the right
-ax3 = ax1.twinx()
-ax3.spines['right'].set_position(('outward', 60))
+# Mark Paro
+paro_mass = 86
+paro_idx = np.argmin(np.abs(moai_masses - paro_mass))
+ax_right.plot(paro_mass, required_diameter[paro_idx], 'r*', markersize=15)
+ax_right.text(paro_mass, required_diameter[paro_idx] + 3, 'Paro\n(86 tons)', 
+              ha='center', fontsize=9, weight='bold')
 
-# ============================================================================
-# Plot Bars for Each Variable
-# ============================================================================
-
-# Rope diameter (left y-axis)
-bars1 = ax1.bar(x - width, rope_diameter_required, width, 
-                label='Rope diameter (mm)', 
-                color='steelblue', alpha=0.8)
-
-# Moai mass (right y-axis 1)
-bars2 = ax2.bar(x, typical_mass, width, 
-                label='Moai mass (tons)', 
-                color='coral', alpha=0.8)
-
-# People per rope (right y-axis 2)
-bars3 = ax3.bar(x + width, people_required, width, 
-                label='People per rope', 
-                color='lightgreen', alpha=0.8)
-
-# ============================================================================
-# Add Handling Limit Reference Line
-# ============================================================================
-
-ax1.axhline(y=50, color='red', linestyle='--', linewidth=2, alpha=0.5)
-ax1.text(0.5, 52, 'Practical handling limit (50 mm)', 
-         fontsize=9, color='red')
-
-# ============================================================================
-# Add Annotation for Paro
-# ============================================================================
-
-paro_diameter = rope_diameter_required[3]  # Paro is 4th category
-ax1.annotate('Paro (40 mm)\nstill within\npractical limits',
-             xy=(3, paro_diameter), xytext=(2.5, 30),
-             arrowprops=dict(arrowstyle='->', color='green', lw=1.5),
-             fontsize=9, color='darkgreen', weight='bold',
-             bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.3))
-
-# ============================================================================
-# Labels and Formatting
-# ============================================================================
-
-# X-axis
-ax1.set_xlabel('Moai Category', fontsize=11)
-ax1.set_xticks(x)
-ax1.set_xticklabels(categories)
-
-# Y-axes labels
-ax1.set_ylabel('Rope Diameter (mm)', color='steelblue', fontsize=11)
-ax2.set_ylabel('Moai Mass (tons)', color='coral', fontsize=11)
-ax3.set_ylabel('People per Rope Team', color='green', fontsize=11)
-
-# Title
-ax1.set_title('Rope Requirements Across Moai Transport Scenarios', 
-              fontsize=13, weight='bold')
-
-# Tick colors
-ax1.tick_params(axis='y', labelcolor='steelblue')
-ax2.tick_params(axis='y', labelcolor='coral')
-ax3.tick_params(axis='y', labelcolor='green')
-
-# Y-axis limits
-ax1.set_ylim(0, 70)
-ax2.set_ylim(0, 100)
-ax3.set_ylim(0, 70)
-
-# Grid
-ax1.grid(True, alpha=0.3, axis='y')
-
-# ============================================================================
-# Combined Legend
-# ============================================================================
-
-lines1, labels1 = ax1.get_legend_handles_labels()
-lines2, labels2 = ax2.get_legend_handles_labels()
-lines3, labels3 = ax3.get_legend_handles_labels()
-ax1.legend(lines1 + lines2 + lines3, labels1 + labels2 + labels3, 
-           loc='upper left', fontsize=9)
+# Labels and formatting
+ax_right.set_xlabel('Moai Mass (tons)')
+ax_right.set_ylabel('Required Rope Diameter (mm)')
+ax_right.set_title('Required Rope Diameter for Moai Transport\n(Safety factor = 10)')
+ax_right.grid(True, alpha=0.3)
+ax_right.legend(loc='upper left')
+ax_right.set_xlim(0, 90)
+ax_right.set_ylim(0, 70)
 
 # Save figure
 plt.tight_layout()
 import os
 os.makedirs('figures', exist_ok=True)
-plt.savefig('figures/figure5_transport_scenarios.png', dpi=600, bbox_inches='tight')
-plt.savefig('figures/figure5_transport_scenarios.pdf', dpi=600, bbox_inches='tight')
-print("Figure 5 saved: figures/figure5_transport_scenarios.png and .pdf")
+plt.savefig('figures/figure8_tensile_strength_scaling.png', dpi=600, bbox_inches='tight')
+plt.savefig('figures/figure8_tensile_strength_scaling.pdf', dpi=600, bbox_inches='tight')
+print("Figure 8 saved: figures/figure8_tensile_strength_scaling.png and .pdf")
 plt.show()
