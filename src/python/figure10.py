@@ -1,8 +1,8 @@
 """
-Figure 10: Rope Requirements Across Moai Transport Scenarios
+Figure 10: Human Hand Grip Capability vs Required Rope Diameters
 
-This script generates a multi-axis bar chart comparing rope diameter requirements,
-moai mass, and workforce requirements across different moai categories.
+This script generates a figure showing the relationship between human hand grip
+capability and the rope diameters required for moai transport of various sizes.
 """
 
 import matplotlib.pyplot as plt
@@ -19,130 +19,77 @@ plt.rcParams['legend.fontsize'] = 9
 plt.rcParams['figure.dpi'] = 600
 
 # Create figure
-fig, ax1 = plt.subplots(figsize=(10, 8))
+fig, ax = plt.subplots(figsize=(10, 7))
 
 # ============================================================================
-# Data for Different Moai Categories
+# Human Hand Grip Capability Data
 # ============================================================================
 
-categories = ['Quarry\n(incomplete)', 'Road\n(abandoned)', 
-              'Platform\n(transported)', 'Paro\n(transported)']
+# Human hand circumference range (mm)
+hand_circumference = np.array([180, 190, 200, 210, 220])
+hand_labels = ['Small', 'Small-Med', 'Medium', 'Med-Large', 'Large']
 
-# Typical values for each category
-typical_mass = [15, 12, 14, 86]  # tons
+# Maximum grippable rope diameter
+# Comfortable grip: approximately 35% of hand circumference / π
+max_grip_comfortable = hand_circumference * 0.35 / np.pi  # diameter (mm)
 
-# Calculate rope diameter consistently with other figures
-# Using: working_load = mass * 1.0 kN/ton, SF=10, 916 MPa, 75% efficiency
-tensile_strength = 916  # MPa
-efficiency = 0.75
-safety_factor = 10
-rope_diameter_required = []
-for mass in typical_mass:
-    working_load = mass * 1.0  # kN
-    required_breaking_load = working_load * safety_factor
-    diameter = 2 * np.sqrt(required_breaking_load * 1000 / (tensile_strength * efficiency * np.pi))
-    rope_diameter_required.append(diameter)
-
-people_required = [10, 8, 10, 60]  # estimated people per rope team
-
-x = np.arange(len(categories))
-width = 0.25
+# Maximum grip (difficult): approximately 45% of hand circumference / π
+max_grip_limit = hand_circumference * 0.45 / np.pi  # diameter (mm)
 
 # ============================================================================
-# Create Three Y-Axes
+# Plot Grip Capability
 # ============================================================================
 
-# Second y-axis (mass)
-ax2 = ax1.twinx()
+x_pos = np.arange(len(hand_labels))
+width = 0.35
 
-# Third y-axis (people) - offset to the right
-ax3 = ax1.twinx()
-ax3.spines['right'].set_position(('outward', 60))
-
-# ============================================================================
-# Plot Bars for Each Variable
-# ============================================================================
-
-# Rope diameter (left y-axis)
-bars1 = ax1.bar(x - width, rope_diameter_required, width, 
-                label='Rope diameter (mm)', 
-                color='steelblue', alpha=0.8)
-
-# Moai mass (right y-axis 1)
-bars2 = ax2.bar(x, typical_mass, width, 
-                label='Moai mass (tons)', 
-                color='coral', alpha=0.8)
-
-# People per rope (right y-axis 2)
-bars3 = ax3.bar(x + width, people_required, width, 
-                label='People per rope', 
-                color='lightgreen', alpha=0.8)
+# Plot horizontal bars
+bars1 = ax.barh(x_pos - width/2, max_grip_comfortable, width, 
+                label='Comfortable grip', color='green', alpha=0.7)
+bars2 = ax.barh(x_pos + width/2, max_grip_limit, width, 
+                label='Maximum grip (difficult)', color='orange', alpha=0.7)
 
 # ============================================================================
-# Add Handling Limit Reference Line
+# Add Rope Diameter Requirements for Different Moai Masses
 # ============================================================================
 
-ax1.axhline(y=50, color='red', linestyle='--', linewidth=2, alpha=0.5)
-ax1.text(0.5, 52, 'Practical handling limit (50 mm)', 
-         fontsize=9, color='red')
+# Vertical lines showing required rope diameters
+ax.axvline(x=10, color='blue', linestyle='-', linewidth=2, 
+           label='10 mm (4 ton moai)')
+ax.axvline(x=20, color='purple', linestyle='--', linewidth=2, 
+           label='20 mm (10-20 ton moai)')
+ax.axvline(x=45, color='red', linestyle='--', linewidth=2, 
+           label='45 mm (80 ton moai)')
+ax.axvline(x=40, color='darkred', linestyle=':', linewidth=2,
+           label='40 mm (Paro, 86 tons)')
 
 # ============================================================================
-# Add Annotation for Paro
+# Highlight Impractical Zone
 # ============================================================================
 
-paro_diameter = rope_diameter_required[3]  # Paro is 4th category
-ax1.annotate('Paro (40 mm)\nstill within\npractical limits',
-             xy=(3, paro_diameter), xytext=(2.5, 30),
-             arrowprops=dict(arrowstyle='->', color='green', lw=1.5),
-             fontsize=9, color='darkgreen', weight='bold',
-             bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.3))
+# Shaded region for rope sizes that cannot be gripped
+ax.axvspan(50, 70, alpha=0.15, color='red')
+ax.text(60, 4.5, 'Exceeds practical\nhandling limits', ha='center', fontsize=9, 
+        bbox=dict(boxstyle='round', facecolor='red', alpha=0.2))
 
 # ============================================================================
 # Labels and Formatting
 # ============================================================================
 
-# X-axis
-ax1.set_xlabel('Moai Category', fontsize=11)
-ax1.set_xticks(x)
-ax1.set_xticklabels(categories)
-
-# Y-axes labels
-ax1.set_ylabel('Rope Diameter (mm)', color='steelblue', fontsize=11)
-ax2.set_ylabel('Moai Mass (tons)', color='coral', fontsize=11)
-ax3.set_ylabel('People per Rope Team', color='green', fontsize=11)
-
-# Title
-ax1.set_title('Rope Requirements Across Moai Transport Scenarios', 
-              fontsize=13, weight='bold')
-
-# Tick colors
-ax1.tick_params(axis='y', labelcolor='steelblue')
-ax2.tick_params(axis='y', labelcolor='coral')
-ax3.tick_params(axis='y', labelcolor='green')
-
-# Y-axis limits
-ax1.set_ylim(0, 70)
-ax2.set_ylim(0, 100)
-ax3.set_ylim(0, 70)
-
-# Grid
-ax1.grid(True, alpha=0.3, axis='y')
-
-# ============================================================================
-# Combined Legend
-# ============================================================================
-
-lines1, labels1 = ax1.get_legend_handles_labels()
-lines2, labels2 = ax2.get_legend_handles_labels()
-lines3, labels3 = ax3.get_legend_handles_labels()
-ax1.legend(lines1 + lines2 + lines3, labels1 + labels2 + labels3, 
-           loc='upper left', fontsize=9)
+ax.set_yticks(x_pos)
+ax.set_yticklabels(hand_labels)
+ax.set_xlabel('Rope Diameter (mm)')
+ax.set_ylabel('Hand Size Category')
+ax.set_title('Human Hand Grip Capability vs Required Rope Diameters\nfor Moai Transport')
+ax.legend(loc='lower right', fontsize=9)
+ax.grid(True, alpha=0.3, axis='x')
+ax.set_xlim(0, 70)
 
 # Save figure
 plt.tight_layout()
 import os
 os.makedirs('figures', exist_ok=True)
-plt.savefig('figures/figure10_transport_scenarios.png', dpi=600, bbox_inches='tight')
-plt.savefig('figures/figure10_transport_scenarios.pdf', dpi=600, bbox_inches='tight')
-print("Figure 10 saved: figures/figure10_transport_scenarios.png and .pdf")
+plt.savefig('figures/figure10_grip_limits.png', dpi=600, bbox_inches='tight')
+plt.savefig('figures/figure10_grip_limits.pdf', dpi=600, bbox_inches='tight')
+print("Figure 10 saved: figures/figure10_grip_limits.png and .pdf")
 plt.show()
