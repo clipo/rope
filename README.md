@@ -15,18 +15,20 @@ This study analyzes:
 ```
 .
 ├── figures/                    # Generated figures (600 dpi PNG and PDF)
-│   ├── figure3_*.png/pdf      # Tensile strength scaling
-│   ├── figure4_*.png/pdf      # Hand grip limits
-│   ├── figure5_*.png/pdf      # Transport scenarios
-│   ├── figure6_*.png/pdf      # Moai progression
-│   └── figure7_*.png/pdf      # Rope production investment
+│   ├── figure6_*.png/pdf      # Tensile strength scaling
+│   ├── figure7_*.png/pdf      # Hand grip limits
+│   ├── figure8_*.png/pdf      # Transport scenarios
+│   ├── figure9_*.png/pdf      # Moai progression
+│   ├── figure10_*.png/pdf     # Rope production investment
+│   └── figure11_*.png/pdf     # Comparative labor investment
 ├── src/
 │   └── python/                # Figure generation scripts
-│       ├── figure3.py
-│       ├── figure4.py
-│       ├── figure5.py
 │       ├── figure6.py
-│       └── figure7.py
+│       ├── figure7.py
+│       ├── figure8.py
+│       ├── figure9.py
+│       ├── figure10.py
+│       └── figure11.py
 ├── rope_production_section.md  # Draft section on production feasibility
 ├── moai_rope.docx             # Main paper draft
 └── README.md                  # This file
@@ -36,24 +38,27 @@ This study analyzes:
 
 All figures are generated at 600 dpi in both PNG and PDF formats.
 
-### Figure 3: Tensile Strength Scaling
+### Figure 6: Tensile Strength Scaling
 Two-panel figure showing rope breaking load vs diameter and required rope diameter vs moai mass.
 
-### Figure 4: Human Hand Grip Capability
+### Figure 7: Human Hand Grip Capability
 Comparison of human hand grip limits versus required rope diameters for different moai sizes.
 
-### Figure 5: Transport Scenarios
+### Figure 8: Transport Scenarios
 Multi-axis comparison of rope diameter, moai mass, and workforce requirements across transport scenarios.
 
-### Figure 6: Moai Progression Analysis
+### Figure 9: Moai Progression Analysis
 Two-panel figure showing rope requirements for specific moai specimens and continuous relationships across sizes.
 
-### Figure 7: Rope Production Investment
+### Figure 10: Rope Production Investment
 Four-panel analysis showing:
 - Fiber mass requirements
 - Production timeline breakdown
 - Person-days of labor by stage
 - Cumulative investment vs transport distance
+
+### Figure 11: Comparative Time and Labor Investment
+Visual comparison of rope production requirements across moai categories, emphasizing the practical feasibility of rope production even for the largest transported specimens.
 
 ## Key Findings
 
@@ -67,11 +72,12 @@ Four-panel analysis showing:
 To regenerate figures:
 
 ```bash
-python src/python/figure3.py
-python src/python/figure4.py
-python src/python/figure5.py
 python src/python/figure6.py
 python src/python/figure7.py
+python src/python/figure8.py
+python src/python/figure9.py
+python src/python/figure10.py
+python src/python/figure11.py
 ```
 
 Figures will be saved to the `figures/` directory.
