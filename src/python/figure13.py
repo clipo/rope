@@ -32,9 +32,9 @@ fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(14, 11))
 # ============================================================================
 
 # Rope requirements (from our analysis)
-moai_masses = np.array([4.3, 18, 40, 60, 86])  # tons
+moai_masses = np.array([4.3, 18, 40, 60, 82])  # tons
 moai_labels = ['Experimental\n4.3t', 'Typical\n18t', 'Large\n40t',
-               'Very Large\n60t', 'Paro\n86t']
+               'Very Large\n60t', 'Paro\n82t']
 
 # Calculate rope diameter needed (SF=10, 916 MPa, 65% packing, 75% construction efficiency)
 tensile_strength = 916  # MPa

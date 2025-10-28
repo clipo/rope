@@ -30,7 +30,7 @@ gs = fig.add_gridspec(2, 3, height_ratios=[1.2, 1.3], hspace=0.4, wspace=0.35)
 # DATA FOR MOAI SPECIMENS
 # ============================================================================
 
-moai_masses = np.array([4.3, 18, 40, 60, 86])
+moai_masses = np.array([4.3, 18, 40, 60, 82])
 
 # Calculate rope diameters using correct formula with packing efficiency
 tensile_strength = 916  # MPa

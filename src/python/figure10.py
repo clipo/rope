@@ -71,7 +71,7 @@ def calc_rope_diameter(mass_tons):
 d_4ton = calc_rope_diameter(4)
 d_15ton = calc_rope_diameter(15)
 d_80ton = calc_rope_diameter(80)
-d_86ton = calc_rope_diameter(86)
+d_82ton = calc_rope_diameter(82)
 
 # Vertical lines showing required rope diameters
 ax.axvline(x=d_4ton, color='blue', linestyle='-', linewidth=2,
@@ -80,8 +80,8 @@ ax.axvline(x=d_15ton, color='purple', linestyle='--', linewidth=2,
            label=f'{d_15ton:.0f} mm (15 ton moai)')
 ax.axvline(x=d_80ton, color='red', linestyle='--', linewidth=2,
            label=f'{d_80ton:.0f} mm (80 ton moai)')
-ax.axvline(x=d_86ton, color='darkred', linestyle=':', linewidth=2,
-           label=f'{d_86ton:.0f} mm (Paro, 86 tons)')
+ax.axvline(x=d_82ton, color='darkred', linestyle=':', linewidth=2,
+           label=f'{d_82ton:.0f} mm (Paro, 82 tons)')
 
 # ============================================================================
 # Highlight Impractical Zone

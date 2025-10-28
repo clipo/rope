@@ -83,7 +83,7 @@ ax_left.set_ylim(0, 1200)
 # ============================================================================
 
 # Moai masses to analyze
-moai_masses = np.array([4, 10, 20, 40, 60, 80, 86])  # tons
+moai_masses = np.array([4, 10, 20, 40, 60, 80, 82])  # tons
 
 # Assume working load = 1 kN per ton (simplified estimate)
 force_per_rope = moai_masses * 1000  # N
@@ -110,10 +110,10 @@ ax_right.fill_between(moai_masses, 50, 70, alpha=0.2, color='red',
                        label='Difficult to handle')
 
 # Mark Paro
-paro_mass = 86
+paro_mass = 82
 paro_idx = np.argmin(np.abs(moai_masses - paro_mass))
 ax_right.plot(paro_mass, required_diameter[paro_idx], 'r*', markersize=15)
-ax_right.text(paro_mass, required_diameter[paro_idx] + 3, f'Paro\n(86 tons, {required_diameter[paro_idx]:.0f} mm)',
+ax_right.text(paro_mass, required_diameter[paro_idx] + 3, f'Paro\n(82 tons, {required_diameter[paro_idx]:.0f} mm)',
               ha='center', fontsize=9, weight='bold')
 
 # Labels and formatting

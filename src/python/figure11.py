@@ -29,7 +29,7 @@ categories = ['Quarry\n(incomplete)', 'Road\n(abandoned)',
               'Platform\n(transported)', 'Paro\n(transported)']
 
 # Typical values for each category
-typical_mass = [15, 12, 14, 86]  # tons
+typical_mass = [15, 12, 14, 82]  # tons
 
 # Calculate rope diameter consistently with other figures
 # Using: working_load = mass * 1.0 kN/ton, SF=10, 916 MPa, 65% packing, 75% construction efficiency

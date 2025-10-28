@@ -30,7 +30,7 @@ fig, (ax_top, ax_bottom) = plt.subplots(2, 1, figsize=(12, 10))
 
 moai_names = ['Experimental\nReplica', 'Ahu Akivi\n(typical)', 'Paro',
               'Ahu Tongariki\n(largest)', 'Te Tokanga\n(quarry)']
-moai_masses = np.array([4.3, 18, 86, 90, 260])  # metric tons
+moai_masses = np.array([4.3, 18, 82, 90, 260])  # metric tons
 
 # Rope calculation parameters
 tensile_strength = 916  # MPa for T. cordifolia
