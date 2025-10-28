@@ -53,15 +53,35 @@ bars2 = ax.barh(x_pos + width/2, max_grip_limit, width,
 # Add Rope Diameter Requirements for Different Moai Masses
 # ============================================================================
 
+# Calculate required rope diameters using paper specifications
+tensile_strength = 916  # MPa
+packing_efficiency = 0.65  # 65% fiber packing efficiency
+construction_efficiency = 0.75  # 75% construction efficiency
+safety_factor = 10
+
+def calc_rope_diameter(mass_tons):
+    """Calculate required rope diameter for given moai mass"""
+    working_load = mass_tons * 1.0  # kN
+    required_breaking_load = working_load * safety_factor
+    diameter = 2 * np.sqrt(required_breaking_load * 1000 /
+                           (tensile_strength * packing_efficiency * construction_efficiency * np.pi))
+    return diameter
+
+# Calculate diameters for different moai sizes
+d_4ton = calc_rope_diameter(4)
+d_15ton = calc_rope_diameter(15)
+d_80ton = calc_rope_diameter(80)
+d_86ton = calc_rope_diameter(86)
+
 # Vertical lines showing required rope diameters
-ax.axvline(x=10, color='blue', linestyle='-', linewidth=2, 
-           label='10 mm (4 ton moai)')
-ax.axvline(x=20, color='purple', linestyle='--', linewidth=2, 
-           label='20 mm (10-20 ton moai)')
-ax.axvline(x=45, color='red', linestyle='--', linewidth=2, 
-           label='45 mm (80 ton moai)')
-ax.axvline(x=40, color='darkred', linestyle=':', linewidth=2,
-           label='40 mm (Paro, 86 tons)')
+ax.axvline(x=d_4ton, color='blue', linestyle='-', linewidth=2,
+           label=f'{d_4ton:.0f} mm (4 ton moai)')
+ax.axvline(x=d_15ton, color='purple', linestyle='--', linewidth=2,
+           label=f'{d_15ton:.0f} mm (15 ton moai)')
+ax.axvline(x=d_80ton, color='red', linestyle='--', linewidth=2,
+           label=f'{d_80ton:.0f} mm (80 ton moai)')
+ax.axvline(x=d_86ton, color='darkred', linestyle=':', linewidth=2,
+           label=f'{d_86ton:.0f} mm (Paro, 86 tons)')
 
 # ============================================================================
 # Highlight Impractical Zone

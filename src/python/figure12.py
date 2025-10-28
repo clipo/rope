@@ -34,7 +34,8 @@ moai_masses = np.array([4.3, 18, 86, 90, 260])  # metric tons
 
 # Rope calculation parameters
 tensile_strength = 916  # MPa for T. cordifolia
-efficiency = 0.75  # rope construction efficiency
+packing_efficiency = 0.65  # fiber packing efficiency (65%)
+construction_efficiency = 0.75  # rope construction efficiency (75%)
 safety_factors_sf10 = 10
 safety_factors_sf5 = 5
 
@@ -46,11 +47,11 @@ working_load = moai_masses * 1.0  # kN
 required_breaking_load_sf10 = working_load * safety_factors_sf10  # kN
 required_breaking_load_sf5 = working_load * safety_factors_sf5  # kN
 
-# Calculate diameter: d = 2 × sqrt(Breaking_load / (tensile_strength × π × efficiency))
-required_diameter_sf10 = 2 * np.sqrt(required_breaking_load_sf10 * 1000 / 
-                                     (tensile_strength * efficiency * np.pi))
-required_diameter_sf5 = 2 * np.sqrt(required_breaking_load_sf5 * 1000 / 
-                                    (tensile_strength * efficiency * np.pi))
+# Calculate diameter: d = 2 × sqrt(Breaking_load / (tensile_strength × π × packing_efficiency × construction_efficiency))
+required_diameter_sf10 = 2 * np.sqrt(required_breaking_load_sf10 * 1000 /
+                                     (tensile_strength * packing_efficiency * construction_efficiency * np.pi))
+required_diameter_sf5 = 2 * np.sqrt(required_breaking_load_sf5 * 1000 /
+                                    (tensile_strength * packing_efficiency * construction_efficiency * np.pi))
 
 # Colors based on transport status
 colors = ['green', 'blue', 'orange', 'orange', 'red']
@@ -136,10 +137,10 @@ working_load_range = moai_range * 1.0
 required_breaking_load_range_sf10 = working_load_range * 10
 required_breaking_load_range_sf5 = working_load_range * 5
 
-diameter_sf10 = 2 * np.sqrt(required_breaking_load_range_sf10 * 1000 / 
-                            (tensile_strength * efficiency * np.pi))
-diameter_sf5 = 2 * np.sqrt(required_breaking_load_range_sf5 * 1000 / 
-                           (tensile_strength * efficiency * np.pi))
+diameter_sf10 = 2 * np.sqrt(required_breaking_load_range_sf10 * 1000 /
+                            (tensile_strength * packing_efficiency * construction_efficiency * np.pi))
+diameter_sf5 = 2 * np.sqrt(required_breaking_load_range_sf5 * 1000 /
+                           (tensile_strength * packing_efficiency * construction_efficiency * np.pi))
 
 # Plot continuous curves
 ax_bottom.plot(moai_range, diameter_sf10, 'b-', linewidth=2.5, 

@@ -29,14 +29,16 @@ fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(12, 5))
 # Parameters
 diameters = np.linspace(5, 60, 100)  # mm
 tensile_strength = 916  # MPa for T. cordifolia
-efficiency = 0.75  # rope construction efficiency (70-80%)
+packing_efficiency = 0.65  # fiber packing efficiency (65%)
+construction_efficiency = 0.75  # rope construction efficiency (75%)
 
 # Calculate cross-sectional area
 area = np.pi * (diameters/2)**2  # mm^2
+effective_area = area * packing_efficiency  # account for fiber packing
 
 # Calculate breaking load
-# Breaking Load (N) = Tensile Strength (MPa) × Area (mm²) × Efficiency
-breaking_load = tensile_strength * area * efficiency / 1000  # Convert to kN
+# Breaking Load (N) = Tensile Strength (MPa) × Effective Area (mm²) × Construction Efficiency
+breaking_load = tensile_strength * effective_area * construction_efficiency / 1000  # Convert to kN
 
 # Plot main curve
 ax_left.plot(diameters, breaking_load, 'b-', linewidth=2, 
@@ -58,19 +60,19 @@ ax_left.plot(diameters, safety_factor_8, 'r--', linewidth=1, alpha=0.5,
 diameter_10mm = 10
 idx_10 = np.argmin(np.abs(diameters - diameter_10mm))
 ax_left.plot(diameter_10mm, breaking_load[idx_10], 'ro', markersize=8)
-ax_left.text(diameter_10mm, breaking_load[idx_10] + 20, '10 mm\n32 kN', 
+ax_left.text(diameter_10mm, breaking_load[idx_10] + 20, f'10 mm\n{breaking_load[idx_10]:.0f} kN',
              ha='center', fontsize=8)
 
 diameter_45mm = 45
 idx_45 = np.argmin(np.abs(diameters - diameter_45mm))
 ax_left.plot(diameter_45mm, breaking_load[idx_45], 'ro', markersize=8)
-ax_left.text(diameter_45mm, breaking_load[idx_45] + 40, '45 mm\n1093 kN',
+ax_left.text(diameter_45mm, breaking_load[idx_45] + 40, f'45 mm\n{breaking_load[idx_45]:.0f} kN',
              ha='center', fontsize=8)
 
 # Labels and formatting
 ax_left.set_xlabel('Rope Diameter (mm)')
 ax_left.set_ylabel('Breaking Load (kN)')
-ax_left.set_title('Rope Breaking Load vs Diameter\n(Triumfetta cordifolia, 75% efficiency)')
+ax_left.set_title('Rope Breaking Load vs Diameter\n(Triumfetta cordifolia, 65% packing, 75% construction efficiency)')
 ax_left.grid(True, alpha=0.3)
 ax_left.legend(loc='upper left', fontsize=8)
 ax_left.set_xlim(5, 60)
@@ -93,10 +95,10 @@ safety_factor = 10
 required_breaking_load = force_per_rope * safety_factor / 1000  # kN
 
 # Calculate required diameter from breaking load
-# Rearranging: Breaking Load = Tensile Strength × π × (d/2)² × Efficiency
-# d = 2 × sqrt(Breaking Load / (Tensile Strength × π × Efficiency))
-required_diameter = 2 * np.sqrt(required_breaking_load * 1000 / 
-                                (tensile_strength * efficiency * np.pi))
+# Rearranging: Breaking Load = Tensile Strength × π × (d/2)² × Packing Efficiency × Construction Efficiency
+# d = 2 × sqrt(Breaking Load / (Tensile Strength × π × Packing Efficiency × Construction Efficiency))
+required_diameter = 2 * np.sqrt(required_breaking_load * 1000 /
+                                (tensile_strength * packing_efficiency * construction_efficiency * np.pi))
 
 # Plot required diameter vs mass
 ax_right.plot(moai_masses, required_diameter, 'b-o', linewidth=2, markersize=6)
@@ -111,7 +113,7 @@ ax_right.fill_between(moai_masses, 50, 70, alpha=0.2, color='red',
 paro_mass = 86
 paro_idx = np.argmin(np.abs(moai_masses - paro_mass))
 ax_right.plot(paro_mass, required_diameter[paro_idx], 'r*', markersize=15)
-ax_right.text(paro_mass, required_diameter[paro_idx] + 3, 'Paro\n(86 tons)', 
+ax_right.text(paro_mass, required_diameter[paro_idx] + 3, f'Paro\n(86 tons, {required_diameter[paro_idx]:.0f} mm)',
               ha='center', fontsize=9, weight='bold')
 
 # Labels and formatting

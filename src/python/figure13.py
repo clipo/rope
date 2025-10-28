@@ -36,14 +36,15 @@ moai_masses = np.array([4.3, 18, 40, 60, 86])  # tons
 moai_labels = ['Experimental\n4.3t', 'Typical\n18t', 'Large\n40t',
                'Very Large\n60t', 'Paro\n86t']
 
-# Calculate rope diameter needed (SF=10, 916 MPa, 75% efficiency)
+# Calculate rope diameter needed (SF=10, 916 MPa, 65% packing, 75% construction efficiency)
 tensile_strength = 916  # MPa
-efficiency = 0.75
+packing_efficiency = 0.65  # fiber packing efficiency (65%)
+construction_efficiency = 0.75  # rope construction efficiency (75%)
 safety_factor = 10
 working_load = moai_masses * 1.0  # kN/ton
 required_breaking_load = working_load * safety_factor
 rope_diameter = 2 * np.sqrt(required_breaking_load * 1000 /
-                            (tensile_strength * efficiency * np.pi))
+                            (tensile_strength * packing_efficiency * construction_efficiency * np.pi))
 
 # From Folk (2018): experimental rope data
 # 6,000g fiber from 2 trees, 4m rope used 1,200g

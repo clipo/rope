@@ -32,15 +32,16 @@ categories = ['Quarry\n(incomplete)', 'Road\n(abandoned)',
 typical_mass = [15, 12, 14, 86]  # tons
 
 # Calculate rope diameter consistently with other figures
-# Using: working_load = mass * 1.0 kN/ton, SF=10, 916 MPa, 75% efficiency
+# Using: working_load = mass * 1.0 kN/ton, SF=10, 916 MPa, 65% packing, 75% construction efficiency
 tensile_strength = 916  # MPa
-efficiency = 0.75
+packing_efficiency = 0.65  # fiber packing efficiency (65%)
+construction_efficiency = 0.75  # rope construction efficiency (75%)
 safety_factor = 10
 rope_diameter_required = []
 for mass in typical_mass:
     working_load = mass * 1.0  # kN
     required_breaking_load = working_load * safety_factor
-    diameter = 2 * np.sqrt(required_breaking_load * 1000 / (tensile_strength * efficiency * np.pi))
+    diameter = 2 * np.sqrt(required_breaking_load * 1000 / (tensile_strength * packing_efficiency * construction_efficiency * np.pi))
     rope_diameter_required.append(diameter)
 
 people_required = [10, 8, 10, 60]  # estimated people per rope team
@@ -91,11 +92,11 @@ ax1.text(0.5, 52, 'Practical handling limit (50 mm)',
 # ============================================================================
 
 paro_diameter = rope_diameter_required[3]  # Paro is 4th category
-ax1.annotate('Paro (40 mm)\nstill within\npractical limits',
-             xy=(3, paro_diameter), xytext=(2.5, 30),
-             arrowprops=dict(arrowstyle='->', color='green', lw=1.5),
-             fontsize=9, color='darkgreen', weight='bold',
-             bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.3))
+ax1.annotate(f'Paro ({paro_diameter:.0f} mm)\nat the practical\nhandling limit',
+             xy=(3, paro_diameter), xytext=(0.5, 55),
+             arrowprops=dict(arrowstyle='->', color='orange', lw=1.5),
+             fontsize=9, color='darkorange', weight='bold',
+             bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.3))
 
 # ============================================================================
 # Labels and Formatting

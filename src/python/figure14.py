@@ -30,14 +30,26 @@ gs = fig.add_gridspec(2, 3, height_ratios=[1.2, 1.3], hspace=0.4, wspace=0.35)
 # DATA FOR MOAI SPECIMENS
 # ============================================================================
 
+moai_masses = np.array([4.3, 18, 40, 60, 86])
+
+# Calculate rope diameters using correct formula with packing efficiency
+tensile_strength = 916  # MPa
+packing_efficiency = 0.65  # fiber packing efficiency (65%)
+construction_efficiency = 0.75  # rope construction efficiency (75%)
+safety_factor = 10
+working_load = moai_masses * 1.0  # kN/ton
+required_breaking_load = working_load * safety_factor
+rope_diameters = 2 * np.sqrt(required_breaking_load * 1000 /
+                             (tensile_strength * packing_efficiency * construction_efficiency * np.pi))
+
 moai_data = {
     'names': ['Experimental\nReplica\n(Hunt & Lipo)',
               'Typical\nPlatform\nMoai',
               'Large\nPlatform\nMoai',
               'Very Large\n(Near Limit)',
               'Paro\n(Largest\nTransported)'],
-    'masses': np.array([4.3, 18, 40, 60, 86]),
-    'diameters': np.array([8.9, 18.3, 27.2, 33.3, 39.9]),
+    'masses': moai_masses,
+    'diameters': rope_diameters,
     'colors': ['#2ecc71', '#3498db', '#9b59b6', '#e67e22', '#e74c3c']
 }
 

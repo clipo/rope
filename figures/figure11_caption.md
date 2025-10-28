@@ -1,0 +1,3 @@
+# Figure 11. Rope requirements across documented moai categories.
+
+Three parameters are compared for moai found in quarry (incomplete), along roads (abandoned during transport), on platforms (successfully transported), and Paro specifically: required rope diameter (blue), typical moai mass (orange), and estimated people per rope team (green). Rope diameters calculated assuming safety factor of 10, fiber tensile strength of 916 MPa, 65% packing efficiency, and 75% construction efficiency. Transport of Paro required a rope diameter (50 mm) that reaches the 50 mm practical handling limit, demonstrating that the largest successfully transported moai pushed rope technology to the upper threshold of human grip capability using standard construction methods and safety factors.
